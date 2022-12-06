@@ -38,9 +38,29 @@ export const getJobsAction = (query) => {
         }, 500);
       } else {
         alert("Error fetching results");
+        setTimeout(() => {
+          dispatch({
+            type: GET_JOBS_LOADING,
+            payload: false,
+          });
+        }, 500);
+        dispatch({
+          type: GET_JOBS_ERROR,
+          payload: true,
+        });
       }
     } catch (error) {
       console.log(error);
+      setTimeout(() => {
+        dispatch({
+          type: GET_JOBS_LOADING,
+          payload: false,
+        });
+      }, 500);
+      dispatch({
+        type: GET_JOBS_ERROR,
+        payload: true,
+      });
     }
   };
 };

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Container, Row, Col, Form, Spinner } from "react-bootstrap";
+import { Container, Row, Col, Form, Spinner, Alert } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { getJobsAction } from "../redux/actions";
@@ -11,6 +11,7 @@ const MainSearch = () => {
   // const baseEndpoint = "https://strive-benchmark.herokuapp.com/api/jobs?search=";
   const jobsFromRedux = useSelector((state) => state.companies.jobs);
   const areJobsLoading = useSelector((state) => state.companies.isLoading);
+  const areJobsError = useSelector((state) => state.companies.isError);
   const dispatch = useDispatch();
   const [isSubmit, setIsSubmit] = useState(false);
 
@@ -54,11 +55,22 @@ const MainSearch = () => {
                 <Spinner animation="grow" />
               </Col>
             ) : (
-              <Col xs={10} className="mx-auto mb-5">
-                {jobsFromRedux.map((jobData) => (
-                  <Job key={jobData._id} data={jobData} />
-                ))}
-              </Col>
+              <>
+                {areJobsError ? (
+                  <Col xs={12} className="d-flex justify-content-center mt-3">
+                    <Alert variant="danger">
+                      {" "}
+                      Whoopsie, something went wrong :({" "}
+                    </Alert>
+                  </Col>
+                ) : (
+                  <Col xs={10} className="mx-auto mb-5">
+                    {jobsFromRedux.map((jobData) => (
+                      <Job key={jobData._id} data={jobData} />
+                    ))}
+                  </Col>
+                )}
+              </>
             )}{" "}
           </>
         )}
