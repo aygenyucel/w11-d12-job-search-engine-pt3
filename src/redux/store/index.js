@@ -1,15 +1,24 @@
-import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import {
+  configureStore,
+  combineReducers,
+  getDefaultMiddleware,
+} from "@reduxjs/toolkit";
 import favouriteCompaniesReducer from "../reducers/favouriteCompaniesReducer";
 // import mainReducer from "./../reducers/index";
 import companiesReducer from "./../reducers/companiesReducer";
 import localStorage from "redux-persist/es/storage";
 import persistReducer from "redux-persist/es/persistReducer";
 import persistStore from "redux-persist/es/persistStore";
+import { encryptTransform } from "redux-persist-transform-encrypt";
 
 const persistConfig = {
   key: "root",
   storage: localStorage,
-  //TODO: Add encrypt transform
+  transforms: [
+    encryptTransform({
+      secretKey: process.env.REACT_APP_SECRET_KEY,
+    }),
+  ],
 };
 
 const bigReducer = combineReducers({
@@ -20,10 +29,14 @@ const bigReducer = combineReducers({
 const persistedReducer = persistReducer(persistConfig, bigReducer);
 
 // const store = configureStore({ reducer: bigReducer });
-
 const store = configureStore({
   reducer: persistedReducer,
-  //TODO: Add serializable check here performed by Redux to shutting down the error
+  //serializable check performed by Redux for shutting down the error
+  middleware: (getDefaultMiddleware) => {
+    return getDefaultMiddleware({
+      serializableCheck: false,
+    });
+  },
 });
 
 //creating a persisted version of the store
