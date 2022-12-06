@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { getJobsAction } from "../redux/actions";
 import Job from "./Job";
+import { getJobsSubmitAction } from "./../redux/actions/index";
 
 const MainSearch = () => {
   const [query, setQuery] = useState("");
@@ -12,8 +13,8 @@ const MainSearch = () => {
   const jobsFromRedux = useSelector((state) => state.companies.jobs);
   const areJobsLoading = useSelector((state) => state.companies.isLoading);
   const areJobsError = useSelector((state) => state.companies.isError);
+  const areJobsSubmit = useSelector((state) => state.companies.isSubmit);
   const dispatch = useDispatch();
-  const [isSubmit, setIsSubmit] = useState(false);
 
   const handleChange = (e) => {
     setQuery(e.target.value);
@@ -21,9 +22,11 @@ const MainSearch = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    //prevents page reload
     dispatch(getJobsAction(query));
-    setIsSubmit(true);
+    dispatch(getJobsSubmitAction(true));
+    // setQuery("");
+    //to clear input value
   };
 
   return (
@@ -48,7 +51,7 @@ const MainSearch = () => {
             />
           </Form>
         </Col>
-        {isSubmit && (
+        {areJobsSubmit && (
           <>
             {areJobsLoading ? (
               <Col xs={12} className="d-flex justify-content-center mt-3">
@@ -64,14 +67,21 @@ const MainSearch = () => {
                     </Alert>
                   </Col>
                 ) : (
-                  <Col xs={10} className="mx-auto mb-5">
-                    {jobsFromRedux.map((jobData) => (
-                      <Job key={jobData._id} data={jobData} />
-                    ))}
-                  </Col>
+                  <>
+                    {" "}
+                    {jobsFromRedux.length === 0 ? (
+                      <Alert variant="primary">There is no job to show</Alert>
+                    ) : (
+                      <Col xs={10} className="mx-auto mb-5">
+                        {jobsFromRedux.map((jobData) => (
+                          <Job data={jobData} />
+                        ))}
+                      </Col>
+                    )}{" "}
+                  </>
                 )}
               </>
-            )}{" "}
+            )}
           </>
         )}
       </Row>

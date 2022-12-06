@@ -1,9 +1,15 @@
-import { GET_JOBS, GET_JOBS_ERROR, GET_JOBS_LOADING } from "../actions";
+import {
+  GET_JOBS,
+  GET_JOBS_ERROR,
+  GET_JOBS_LOADING,
+  GET_JOBS_SUBMIT,
+} from "../actions";
 
 const initialState = {
   jobs: [],
-  isLoading: true,
+  isLoading: false,
   isError: false,
+  isSubmit: false,
 };
 
 const companiesReducer = (state = initialState, action) => {
@@ -26,6 +32,11 @@ const companiesReducer = (state = initialState, action) => {
         isError: action.payload,
       };
 
+    case GET_JOBS_SUBMIT:
+      return {
+        ...state,
+        isSubmit: action.payload,
+      };
     // case "GET_SEARCH_QUERY":
     //   return {
     //     ...state,

@@ -3,6 +3,7 @@ export const REMOVE_FROM_FAVOURITES = "REMOVE_FROM_FAVOURITES";
 export const GET_JOBS = "GET_JOBS";
 export const GET_JOBS_LOADING = "GET_JOBS_LOADING";
 export const GET_JOBS_ERROR = "GET_JOBS_ERROR";
+export const GET_JOBS_SUBMIT = "GET_JOBS_SUBMIT";
 
 export const addToFavouritesAction = (data) => {
   return {
@@ -12,13 +13,24 @@ export const addToFavouritesAction = (data) => {
 };
 
 export const removeFromFavouritesAction = (data) => {
-  return { type: "REMOVE_FROM_FAVOURITES", payload: data.company_name };
+  return { type: REMOVE_FROM_FAVOURITES, payload: data.company_name };
+};
+
+export const getJobsSubmitAction = (data) => {
+  return {
+    type: GET_JOBS_SUBMIT,
+    payload: data,
+  };
 };
 
 export const getJobsAction = (query) => {
   return async (dispatch, getState) => {
     try {
       console.log(getState);
+      dispatch({
+        type: GET_JOBS_LOADING,
+        payload: true,
+      });
       const response = await fetch(
         "https://strive-benchmark.herokuapp.com/api/jobs?search=" +
           query +

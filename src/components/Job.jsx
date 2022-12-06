@@ -17,6 +17,7 @@ const Job = ({ data }) => {
     <Row
       className="mx-0 mt-3 p-3 d-flex justify-content-between"
       style={{ border: "1px solid #00000033", borderRadius: 4 }}
+      key={data.id}
     >
       <Col xs={3}>
         <Link to={`/${data.company_name}`}>{data.company_name}</Link>
